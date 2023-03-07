@@ -7,17 +7,30 @@ import Filter from './Filter';
 export class App extends Component {
   state = {
     contacts: [
-      { name: 'Edward Castro', number: '1666-060606', id: 'qucrmobV8' },
-      { name: 'Sahar Anderson', number: '1666-060607', id: 'qucrmobV9' },
-      { name: 'Hassan Ramos', number: '1666-060608', id: 'qucrmob10' },
-      { name: 'Keane Jefferson', number: '1666-060609', id: 'qucrmob11' },
-      { name: 'Mikayla Moore', number: '1666-060610', id: 'qucrmob12' },
-      { name: 'Tammy Peterson', number: '1666-060611', id: 'qucrmob13' },
-      { name: 'Andrew Ford', number: '1666-060612', id: 'qucrmob14' },
-      { name: 'April Lawrence', number: '1666-060613', id: 'qucrmob15' },
+      { name: 'Welcome to', number: '1234-567801', id: 'qucrmobV8' },
+      { name: 'ContactBook application', number: '1234-5678', id: 'qucrmobV9' },
     ],
     filter: '',
   };
+
+  componentDidMount() {
+    const contacts = localStorage.getItem('contacts');
+    const parsedContacts = JSON.parse(contacts);
+
+    if (parsedContacts) {
+      this.setState({ contacts: parsedContacts });
+    }
+  }
+
+  componentDidUpdate(_, prevState) {
+    const nextContacts = this.state.contacts;
+    const prevContacts = prevState.contacts;
+
+    if (nextContacts !== prevContacts) {
+      // console.log('Оновились Contacts, зберігаю Contacts в сховище');
+      localStorage.setItem('contacts', JSON.stringify(nextContacts));
+    }
+  }
 
   // -------------------------//
   // Add and Delete contact   //
@@ -26,6 +39,7 @@ export class App extends Component {
     const findContact = this.state.contacts.find(
       contact => contact.name.toLowerCase() === newContact.name.toLowerCase()
     );
+
     if (findContact) {
       Notify.failure(`${newContact.name} is already in contact`);
       return;
@@ -34,6 +48,7 @@ export class App extends Component {
     this.setState(({ contacts }) => ({
       contacts: [...contacts, newContact],
     }));
+
     resetForm();
   };
 
